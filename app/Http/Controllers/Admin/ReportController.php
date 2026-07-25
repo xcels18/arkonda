@@ -38,6 +38,10 @@ class ReportController extends Controller
             $query->where('jenis_kontrak', $request->jenis);
         }
 
+        if ($request->filled('sumber_dana')) {
+            $query->where('sumber_dana', $request->sumber_dana);
+        }
+
         $stats = [
             'total_kontrak' => (clone $query)->count(),
             'total_nilai' => (clone $query)->sum('nilai_kontrak'),
@@ -67,6 +71,7 @@ class ReportController extends Controller
             'tahun' => $request->tahun,
             'opd_id' => $request->opd_id,
             'jenis' => $request->jenis,
+            'sumber_dana' => $request->sumber_dana,
         ];
 
         $filename = 'Rekap_Kontrak';
@@ -84,6 +89,10 @@ class ReportController extends Controller
         
         if ($request->filled('jenis')) {
             $filename .= '_' . $request->jenis;
+        }
+        
+        if ($request->filled('sumber_dana')) {
+            $filename .= '_' . $request->sumber_dana;
         }
         
         $filename .= '_' . date('Ymd_His') . '.xlsx';

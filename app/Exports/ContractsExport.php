@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Contract;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
@@ -34,6 +35,10 @@ class ContractsExport implements FromQuery, WithHeadings, WithMapping, WithStyle
 
         if (!empty($this->filters['jenis'])) {
             $query->where('jenis_kontrak', $this->filters['jenis']);
+        }
+
+        if (!empty($this->filters['sumber_dana'])) {
+            $query->where('sumber_dana', $this->filters['sumber_dana']);
         }
 
         return $query->orderBy('tahun_anggaran', 'desc')->orderBy('tanggal_kontrak', 'desc');
@@ -69,7 +74,7 @@ class ContractsExport implements FromQuery, WithHeadings, WithMapping, WithStyle
         return [
             $no,
             $contract->nomor_kontrak,
-            $contract->nama_kontrak,
+            $this->formatText($contract->nama_kontrak),
             $contract->opd?->singkatan ?? '-',
             $contract->jenis_kontrak ?? '-',
             $contract->nama_penyedia,
@@ -84,6 +89,18 @@ class ContractsExport implements FromQuery, WithHeadings, WithMapping, WithStyle
             $contract->keterangan ?? '-',
             $contract->hasFile() ? 'Ada' : 'Tidak Ada',
         ];
+    }
+
+    /**
+     * Normalize text casing to Title Case for consistent display in export.
+     */
+    private function formatText(?string $text): string
+    {
+        if (empty($text)) {
+            return '-';
+        }
+
+        return Str::title(Str::lower($text));
     }
 
     public function styles(Worksheet $sheet): array

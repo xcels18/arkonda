@@ -271,7 +271,7 @@
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                <h3 class="text-base font-semibold text-slate-800">Menyimpan Kontrak...</h3>
+                <h3 id="upload-progress-label" class="text-base font-semibold text-slate-800">Menyimpan Kontrak...</h3>
             </div>
             <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
                 <div id="upload-progress-bar" class="bg-blue-600 h-3 rounded-full transition-all duration-150" style="width: 0%"></div>
@@ -426,18 +426,56 @@
         const progressModal = document.getElementById('upload-progress-modal');
         const progressBar = document.getElementById('upload-progress-bar');
         const progressPercent = document.getElementById('upload-progress-percent');
+        const progressLabel = document.getElementById('upload-progress-label');
         const submitButton = document.getElementById('btn-submit-contract');
 
         contractForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
+            // Guard: if required fields are not filled, let the browser show
+            // its native validation messages instead of showing the modal.
+            if (!contractForm.checkValidity()) {
+                contractForm.reportValidity();
+                return;
+            }
+
             const formData = new FormData(contractForm);
 
-            progressBar.style.width = '0%';
-            progressPercent.textContent = '0';
+            let displayedPercent = 0;
+            let uploadPercent = 0;
+            let uploadDone = false;
+            let finished = false;
+
+            function setDisplay(percent, label) {
+                displayedPercent = percent;
+                progressBar.style.width = percent + '%';
+                progressPercent.textContent = percent;
+                if (label) {
+                    progressLabel.textContent = label;
+                }
+            }
+
+            setDisplay(0, 'Menyimpan Kontrak...');
             progressModal.classList.remove('hidden');
             progressModal.classList.add('flex');
             submitButton.disabled = true;
+
+            // Smoothly animate the displayed percentage toward the target percentage,
+            // so the bar always moves gradually even for very small/fast uploads.
+            const smoothTimer = setInterval(function () {
+                let target = uploadDone ? 95 : uploadPercent;
+                if (finished) {
+                    target = 100;
+                }
+                if (displayedPercent < target) {
+                    displayedPercent = Math.min(target, displayedPercent + 2);
+                    progressBar.style.width = displayedPercent + '%';
+                    progressPercent.textContent = displayedPercent;
+                }
+                if (finished && displayedPercent >= 100) {
+                    clearInterval(smoothTimer);
+                }
+            }, 30);
 
             const xhr = new XMLHttpRequest();
             xhr.open('POST', contractForm.action, true);
@@ -445,25 +483,36 @@
 
             xhr.upload.addEventListener('progress', function (event) {
                 if (event.lengthComputable) {
-                    const percent = Math.round((event.loaded / event.total) * 100);
-                    progressBar.style.width = percent + '%';
-                    progressPercent.textContent = percent;
+                    uploadPercent = Math.round((event.loaded / event.total) * 95);
+                } else {
+                    uploadPercent = 50;
                 }
+            });
+
+            xhr.upload.addEventListener('load', function () {
+                uploadDone = true;
+                progressLabel.textContent = 'Memproses di server...';
             });
 
             xhr.addEventListener('load', function () {
-                if (xhr.responseURL && (xhr.status === 200 || xhr.status === 201)) {
-                    // Followed redirect successfully, load the final page
-                    window.location.href = xhr.responseURL;
-                } else {
-                    // Validation error or other issue: render the returned HTML (e.g. redirect back with errors)
-                    document.open();
-                    document.write(xhr.responseText);
-                    document.close();
-                }
+                finished = true;
+                setDisplay(100, 'Selesai!');
+
+                setTimeout(function () {
+                    if (xhr.responseURL && (xhr.status === 200 || xhr.status === 201)) {
+                        // Followed redirect successfully, load the final page
+                        window.location.href = xhr.responseURL;
+                    } else {
+                        // Validation error or other issue: render the returned HTML (e.g. redirect back with errors)
+                        document.open();
+                        document.write(xhr.responseText);
+                        document.close();
+                    }
+                }, 400);
             });
 
             xhr.addEventListener('error', function () {
+                clearInterval(smoothTimer);
                 progressModal.classList.add('hidden');
                 progressModal.classList.remove('flex');
                 submitButton.disabled = false;
