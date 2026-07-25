@@ -44,6 +44,8 @@ Route::middleware(['auth', 'verified.user'])->group(function () {
 Route::middleware(['auth', 'verified.user', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     // User Management
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::post('/users/{user}/verify', [UserController::class, 'verify'])->name('users.verify');
     Route::post('/users/{user}/unverify', [UserController::class, 'unverify'])->name('users.unverify');
     Route::patch('/users/{user}/role', [UserController::class, 'changeRole'])->name('users.changeRole');

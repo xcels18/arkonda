@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
+use App\Models\Opd;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -42,6 +43,44 @@ class UserController extends Controller
         $users = $query->orderBy('created_at', 'desc')->paginate(15);
 
         return view('admin.users.index', compact('users'));
+    }
+
+    /**
+     * Show edit form for a user
+     */
+    public function edit(User $user)
+    {
+        $opds = Opd::orderBy('nama')->get();
+        return view('admin.users.edit', compact('user', 'opds'));
+    }
+
+    /**
+     * Update user data and (optionally) password
+     */
+    public function update(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'opd_id' => ['nullable', 'exists:opds,id'],
+            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+        ]);
+
+        $oldValues = $user->toArray();
+
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->opd_id = $validated['opd_id'] ?? null;
+
+        if (!empty($validated['password'])) {
+            $user->password = $validated['password'];
+        }
+
+        $user->save();
+
+        AuditLog::log('update', "Admin mengupdate data user: {$user->name}", $user, $oldValues);
+
+        return redirect()->route('admin.users.index')->with('success', "Data user {$user->name} berhasil diperbarui.");
     }
 
     /**
