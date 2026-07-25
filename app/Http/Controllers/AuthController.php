@@ -32,6 +32,10 @@ class AuthController extends Controller
 
         $remember = $request->boolean('remember');
 
+        // Batasi durasi "Ingat saya" menjadi 14 hari (default Laravel 400 hari
+        // dinilai terlalu lama untuk aplikasi arsip kontrak yang sensitif).
+        Auth::guard('web')->setRememberDuration(60 * 24 * 14);
+
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
