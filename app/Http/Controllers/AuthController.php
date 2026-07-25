@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AuditLog;
 use App\Models\Opd;
 use App\Models\User;
+use App\Services\HolidayThemeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,7 +18,9 @@ class AuthController extends Controller
      */
     public function showLoginForm()
     {
-        return view('auth.login');
+        return view('auth.login', [
+            'holidayTheme' => HolidayThemeService::active(),
+        ]);
     }
 
     /**
