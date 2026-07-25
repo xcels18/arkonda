@@ -14,7 +14,7 @@
         <p class="mt-2 text-base text-slate-500">Lengkapi informasi kontrak dan unggah dokumen pendukung</p>
     </div>
 
-    <form action="{{ route('admin.contracts.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('admin.contracts.store') }}" method="POST" enctype="multipart/form-data" id="contract-form">
         @csrf
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -242,7 +242,7 @@
                 <!-- Action Buttons -->
                 <div class="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl border border-slate-200 p-6">
                     <div class="space-y-3">
-                        <button type="submit" class="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm hover:shadow transition-all flex items-center justify-center">
+                        <button type="submit" id="btn-submit-contract" class="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm hover:shadow transition-all flex items-center justify-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                             </svg>
@@ -262,6 +262,23 @@
             </div>
         </div>
     </form>
+
+    <!-- Upload Progress Modal -->
+    <div id="upload-progress-modal" class="fixed inset-0 z-[200] hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm mx-4">
+            <div class="flex items-center mb-4">
+                <svg class="animate-spin h-6 w-6 text-blue-600 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <h3 class="text-base font-semibold text-slate-800">Menyimpan Kontrak...</h3>
+            </div>
+            <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden">
+                <div id="upload-progress-bar" class="bg-blue-600 h-3 rounded-full transition-all duration-150" style="width: 0%"></div>
+            </div>
+            <p class="text-sm text-slate-500 mt-2 text-center"><span id="upload-progress-percent">0</span>%</p>
+        </div>
+    </div>
 
     <script>
         function updateFileName(input) {
@@ -403,6 +420,58 @@
                 opdSearch.value = `${selectedOpd.singkatan} - ${selectedOpd.nama}`;
             }
         }
+
+        // Upload progress modal handling
+        const contractForm = document.getElementById('contract-form');
+        const progressModal = document.getElementById('upload-progress-modal');
+        const progressBar = document.getElementById('upload-progress-bar');
+        const progressPercent = document.getElementById('upload-progress-percent');
+        const submitButton = document.getElementById('btn-submit-contract');
+
+        contractForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(contractForm);
+
+            progressBar.style.width = '0%';
+            progressPercent.textContent = '0';
+            progressModal.classList.remove('hidden');
+            progressModal.classList.add('flex');
+            submitButton.disabled = true;
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', contractForm.action, true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+            xhr.upload.addEventListener('progress', function (event) {
+                if (event.lengthComputable) {
+                    const percent = Math.round((event.loaded / event.total) * 100);
+                    progressBar.style.width = percent + '%';
+                    progressPercent.textContent = percent;
+                }
+            });
+
+            xhr.addEventListener('load', function () {
+                if (xhr.responseURL && (xhr.status === 200 || xhr.status === 201)) {
+                    // Followed redirect successfully, load the final page
+                    window.location.href = xhr.responseURL;
+                } else {
+                    // Validation error or other issue: render the returned HTML (e.g. redirect back with errors)
+                    document.open();
+                    document.write(xhr.responseText);
+                    document.close();
+                }
+            });
+
+            xhr.addEventListener('error', function () {
+                progressModal.classList.add('hidden');
+                progressModal.classList.remove('flex');
+                submitButton.disabled = false;
+                alert('Terjadi kesalahan saat mengunggah. Silakan coba lagi.');
+            });
+
+            xhr.send(formData);
+        });
     </script>
 </x-app-layout>
 
