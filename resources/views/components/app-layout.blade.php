@@ -16,7 +16,7 @@
 </head>
 <body class="bg-slate-100 min-h-screen antialiased">
     <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200" x-data="{ mobileOpen: false }">
+    <nav class="bg-white shadow-sm border-b border-gray-200" x-data="{ mobileOpen: false }" @click.away="mobileOpen = false">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
@@ -89,7 +89,7 @@
         </div>
 
         <!-- Mobile menu -->
-        <div x-show="mobileOpen" x-cloak @click.away="mobileOpen = false" class="md:hidden border-t border-gray-200">
+        <div x-show="mobileOpen" x-cloak class="md:hidden border-t border-gray-200">
             <div class="px-2 pt-2 pb-3 space-y-1">
                 <a href="{{ route('contracts.index') }}" class="block text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium {{ request()->routeIs('contracts.*') && !request()->routeIs('admin.*') ? 'bg-gray-100' : '' }}">
                     Kontrak
