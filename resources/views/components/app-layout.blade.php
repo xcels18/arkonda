@@ -16,7 +16,7 @@
 </head>
 <body class="bg-slate-100 min-h-screen antialiased">
     <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200">
+    <nav class="bg-white shadow-sm border-b border-gray-200" x-data="{ mobileOpen: false }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
@@ -27,7 +27,9 @@
                         <span class="ml-2 text-xl font-semibold text-gray-900">ARKONDA</span>
                     </a>
                 </div>
-                <div class="flex items-center space-x-4">
+
+                <!-- Desktop menu -->
+                <div class="hidden md:flex items-center space-x-4">
                     <a href="{{ route('contracts.index') }}" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium {{ request()->routeIs('contracts.*') && !request()->routeIs('admin.*') ? 'bg-gray-100' : '' }}">
                         Kontrak
                     </a>
@@ -70,6 +72,61 @@
                             </form>
                         </div>
                     </div>
+                </div>
+
+                <!-- Mobile hamburger button -->
+                <div class="flex items-center md:hidden">
+                    <button @click="mobileOpen = !mobileOpen" class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none">
+                        <svg x-show="!mobileOpen" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                        <svg x-show="mobileOpen" x-cloak class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div x-show="mobileOpen" x-cloak @click.away="mobileOpen = false" class="md:hidden border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="{{ route('contracts.index') }}" class="block text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium {{ request()->routeIs('contracts.*') && !request()->routeIs('admin.*') ? 'bg-gray-100' : '' }}">
+                    Kontrak
+                </a>
+                @if(auth()->user()->isAdmin())
+                <a href="{{ route('admin.contracts.index') }}" class="block text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium {{ request()->routeIs('admin.contracts.*') ? 'bg-gray-100' : '' }}">
+                    Kelola Kontrak
+                </a>
+                <a href="{{ route('admin.opds.index') }}" class="block text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium {{ request()->routeIs('admin.opds.*') ? 'bg-gray-100' : '' }}">
+                    Kelola OPD
+                </a>
+                <a href="{{ route('admin.users.index') }}" class="block text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium {{ request()->routeIs('admin.users.*') ? 'bg-gray-100' : '' }}">
+                    Kelola User
+                </a>
+                <a href="{{ route('admin.reports.index') }}" class="block text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium {{ request()->routeIs('admin.reports.*') ? 'bg-gray-100' : '' }}">
+                    Laporan
+                </a>
+                <a href="{{ route('admin.downloads.index') }}" class="block text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium {{ request()->routeIs('admin.downloads.*') ? 'bg-gray-100' : '' }}">
+                    Download Arsip
+                </a>
+                @endif
+            </div>
+            <div class="border-t border-gray-200 pt-4 pb-3">
+                <div class="px-4">
+                    <div class="text-sm font-medium text-gray-900">{{ auth()->user()->name }}</div>
+                    <div class="text-xs text-gray-500">{{ auth()->user()->email }}</div>
+                    <span class="inline-block mt-1 text-xs {{ auth()->user()->isAdmin() ? 'text-blue-600' : 'text-green-600' }}">
+                        {{ auth()->user()->isAdmin() ? 'Administrator' : 'User' }}
+                    </span>
+                </div>
+                <div class="mt-3 px-2">
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50">
+                            Logout
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

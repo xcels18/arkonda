@@ -29,6 +29,7 @@
 
     <!-- Users Table -->
     <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
@@ -110,6 +111,7 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 
     <!-- Pagination -->
