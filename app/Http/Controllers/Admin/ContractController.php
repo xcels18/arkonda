@@ -83,7 +83,7 @@ class ContractController extends Controller
             'opd_id' => ['nullable', 'exists:opds,id'],
             'tahun_anggaran' => ['required', 'integer', 'min:2000', 'max:2100'],
             'keterangan' => ['nullable', 'string'],
-            'dokumen' => ['nullable', 'file', 'mimes:pdf', 'max:512000'], // Max 500MB
+            'dokumen' => ['nullable', 'file', 'mimes:pdf', 'max:30720'], // Max 30MB
         ]);
 
         $contract = Contract::create([
@@ -151,7 +151,7 @@ class ContractController extends Controller
             'opd_id' => ['nullable', 'exists:opds,id'],
             'tahun_anggaran' => ['required', 'integer', 'min:2000', 'max:2100'],
             'keterangan' => ['nullable', 'string'],
-            'dokumen' => ['nullable', 'file', 'mimes:pdf', 'max:512000'],
+            'dokumen' => ['nullable', 'file', 'mimes:pdf', 'max:30720'], // Max 30MB
         ]);
 
         $oldValues = $contract->toArray();
