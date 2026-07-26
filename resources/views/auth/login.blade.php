@@ -1,14 +1,8 @@
-<x-guest-layout :holiday-theme="$holidayTheme ?? null">
+<x-guest-layout>
     <x-slot name="title">Login</x-slot>
 
     <!-- Header -->
     <div class="text-center mb-8">
-        @if($holidayTheme ?? null)
-        <div class="lg:hidden inline-flex items-center mb-3 px-3 py-1 rounded-full text-xs font-medium"
-            style="background-color: {{ $holidayTheme['colors']['primary'] }}1A; color: {{ $holidayTheme['colors']['primary_dark'] }};">
-            {{ $holidayTheme['badge_text'] }}
-        </div>
-        @endif
         <h2 class="text-2xl font-bold text-slate-800">Selamat Datang</h2>
         <p class="text-slate-500 text-sm mt-1">Masuk ke akun Anda untuk melanjutkan</p>
     </div>

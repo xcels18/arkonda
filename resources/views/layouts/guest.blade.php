@@ -14,16 +14,9 @@
     </style>
 </head>
 <body class="min-h-screen bg-slate-100">
-    @php
-        $theme = $holidayTheme ?? null;
-        $panelGradient = $theme
-            ? "background: linear-gradient(135deg, {$theme['colors']['gradient_from']}, {$theme['colors']['gradient_via']}, {$theme['colors']['gradient_to']});"
-            : '';
-    @endphp
     <div class="min-h-screen flex">
         <!-- Left Side - Branding -->
-        <div class="hidden lg:flex lg:w-1/2 {{ $theme ? '' : 'bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900' }} relative overflow-hidden"
-            @if($theme) style="{{ $panelGradient }}" @endif>
+        <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 relative overflow-hidden">
             <!-- Pattern Overlay -->
             <div class="absolute inset-0 opacity-10">
                 <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
@@ -38,15 +31,6 @@
 
             <!-- Content -->
             <div class="relative z-10 flex flex-col justify-center px-12 xl:px-20">
-                @if($theme)
-                <!-- Holiday Theme Badge -->
-                <div class="inline-flex items-center self-start mb-6 px-4 py-1.5 rounded-full bg-white/15 border border-white/25 backdrop-blur-sm">
-                    <svg class="w-4 h-4 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/>
-                    </svg>
-                    <span class="text-white text-sm font-medium">{{ $theme['badge_text'] }}</span>
-                </div>
-                @endif
                 <!-- Logo & Title -->
                 <div class="mb-8">
                     <!-- Logo Kabupaten Puncak Jaya -->
