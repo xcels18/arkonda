@@ -139,7 +139,7 @@
             </div>
 
             <div>
-                <label for="dokumen" class="block text-sm font-medium text-gray-700">Dokumen Scan (PDF, max 500MB)</label>
+                <label for="dokumen" class="block text-sm font-medium text-gray-700">Dokumen Scan (PDF, max 30MB)</label>
                 @if($contract->hasFile())
                 <div class="mt-1 mb-2 p-3 bg-gray-50 rounded-md flex items-center justify-between">
                     <span class="text-sm text-gray-600">{{ $contract->file_name }} ({{ $contract->getFileSizeFormatted() }})</span>

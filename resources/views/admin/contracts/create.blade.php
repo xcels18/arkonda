@@ -213,7 +213,7 @@
                             </div>
                             <p class="text-sm font-medium text-slate-700 mb-1">Klik untuk upload file</p>
                             <p class="text-xs text-slate-500">atau drag & drop file di sini</p>
-                            <p class="text-xs text-slate-400 mt-3">Format: PDF • Maks: 500MB</p>
+                            <p class="text-xs text-slate-400 mt-3">Format: PDF • Maks: 30MB</p>
                             <input type="file" name="dokumen" id="dokumen" accept=".pdf" class="hidden" onchange="updateFileName(this)">
                         </div>
                         <div id="file-name" class="mt-3 text-sm text-slate-600 hidden">
