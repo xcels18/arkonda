@@ -21,8 +21,8 @@ return [
         [
             'key' => 'kemerdekaan',
             'name' => 'Hari Kemerdekaan RI',
-            // Ditampilkan mulai 1 Agustus s.d 20 Agustus setiap tahun
-            'start' => '08-01',
+            // Ditampilkan mulai 17 Juli (masa persiapan) s.d 20 Agustus setiap tahun
+            'start' => '07-17',
             'end' => '08-20',
             'badge_text_template' => 'Dirgahayu Republik Indonesia ke-:tahun',
             'colors' => [
