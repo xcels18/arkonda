@@ -32,7 +32,7 @@
             </div>
 
             <!-- Contract Info -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-white rounded-xl  border border-slate-200 overflow-hidden ui-card">
                 <div class="px-6 py-4 border-b border-slate-100 bg-slate-50">
                     <h2 class="text-sm font-semibold text-slate-800 flex items-center">
                         <svg class="w-4 h-4 mr-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -91,7 +91,7 @@
             </div>
 
             <!-- Provider Info -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-white rounded-xl  border border-slate-200 overflow-hidden ui-card">
                 <div class="px-6 py-4 border-b border-slate-100 bg-slate-50">
                     <h2 class="text-sm font-semibold text-slate-800 flex items-center">
                         <svg class="w-4 h-4 mr-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -116,7 +116,7 @@
             </div>
 
             <!-- Timeline -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-white rounded-xl  border border-slate-200 overflow-hidden ui-card">
                 <div class="px-6 py-4 border-b border-slate-100 bg-slate-50">
                     <h2 class="text-sm font-semibold text-slate-800 flex items-center">
                         <svg class="w-4 h-4 mr-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -165,7 +165,7 @@
         <!-- Sidebar (Right) -->
         <div class="space-y-6">
             <!-- Document Card -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-white rounded-xl  border border-slate-200 overflow-hidden ui-card">
                 <div class="px-5 py-4 border-b border-slate-100 bg-slate-50">
                     <h2 class="text-sm font-semibold text-slate-800 flex items-center">
                         <svg class="w-4 h-4 mr-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -186,14 +186,14 @@
                         <p class="text-xs text-slate-500">{{ $contract->getFileSizeFormatted() }}</p>
                     </div>
                     <div class="space-y-2">
-                        <a href="{{ route('contracts.preview', $contract) }}" target="_blank" class="w-full inline-flex items-center justify-center px-4 py-2.5 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 text-sm font-medium transition-colors">
+                        <a href="{{ route('contracts.preview', $contract) }}" target="_blank" class="w-full inline-flex items-center justify-center px-4 py-2.5 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 text-sm font-medium transition-colors ui-button btn-secondary">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                             </svg>
                             Preview Dokumen
                         </a>
-                        <a href="{{ route('contracts.download', $contract) }}" class="w-full inline-flex items-center justify-center px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium transition-colors">
+                        <a href="{{ route('contracts.download', $contract) }}" class="w-full inline-flex items-center justify-center px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium transition-colors ui-button btn-primary">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                             </svg>
@@ -215,7 +215,7 @@
 
             <!-- Notes Card -->
             @if($contract->keterangan)
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-white rounded-xl  border border-slate-200 overflow-hidden ui-card">
                 <div class="px-5 py-4 border-b border-slate-100 bg-slate-50">
                     <h2 class="text-sm font-semibold text-slate-800 flex items-center">
                         <svg class="w-4 h-4 mr-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -231,7 +231,7 @@
             @endif
 
             <!-- Back Button -->
-            <a href="{{ route('contracts.index') }}" class="w-full inline-flex items-center justify-center px-4 py-2.5 bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 text-sm font-medium transition-colors">
+            <a href="{{ route('contracts.index') }}" class="w-full inline-flex items-center justify-center px-4 py-2.5 bg-slate-100 text-slate-700 rounded-xl hover:bg-slate-200 text-sm font-medium transition-colors ui-button btn-secondary">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                 </svg>

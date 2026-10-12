@@ -13,6 +13,7 @@ class Contract extends Model
 
     // Jenis Kontrak Options
     public const JENIS_KONTRAK = 'Kontrak';
+
     public const JENIS_SPK = 'SPK';
 
     public const JENIS_OPTIONS = [
@@ -86,12 +87,12 @@ class Contract extends Model
 
     public function hasFile(): bool
     {
-        return !empty($this->file_path);
+        return ! empty($this->file_path);
     }
 
     public function getFileSizeFormatted(): string
     {
-        if (!$this->file_size) {
+        if (! $this->file_size) {
             return '-';
         }
 
@@ -104,59 +105,80 @@ class Contract extends Model
             $i++;
         }
 
-        return round($bytes, 2) . ' ' . $units[$i];
+        return round($bytes, 2).' '.$units[$i];
     }
 
     public function getNilaiKontrakFormatted(): string
     {
-        return 'Rp ' . number_format($this->nilai_kontrak, 0, ',', '.');
+        return 'Rp '.number_format($this->nilai_kontrak, 0, ',', '.');
+    }
+
+    public function isAccessibleBy(User $user): bool
+    {
+        return $user->isAdmin() || ($user->opd_id !== null
+            && $this->opd_id !== null
+            && (int) $this->opd_id === (int) $user->opd_id);
+    }
+
+    public function scopeVisibleTo($query, User $user)
+    {
+        if ($user->isAdmin()) {
+            return $query;
+        }
+
+        return $user->opd_id === null
+            ? $query->whereRaw('1 = 0')
+            : $query->where('opd_id', $user->opd_id);
     }
 
     // ==================== Scopes ====================
 
     public function scopeSearch($query, ?string $search)
     {
-        if (!$search) {
+        if (! $search) {
             return $query;
         }
 
         return $query->where(function ($q) use ($search) {
             $q->where('nomor_kontrak', 'like', "%{$search}%")
-              ->orWhere('nama_kontrak', 'like', "%{$search}%")
-              ->orWhere('nama_penyedia', 'like', "%{$search}%");
+                ->orWhere('nama_kontrak', 'like', "%{$search}%")
+                ->orWhere('nama_penyedia', 'like', "%{$search}%");
         });
     }
 
     public function scopeFilterTahun($query, $tahun)
     {
-        if (!$tahun) {
+        if (! $tahun) {
             return $query;
         }
+
         return $query->where('tahun_anggaran', $tahun);
     }
 
     public function scopeFilterJenis($query, $jenis)
     {
-        if (!$jenis) {
+        if (! $jenis) {
             return $query;
         }
+
         return $query->where('jenis_kontrak', $jenis);
     }
 
     public function scopeFilterOpd($query, $opdId)
     {
-        if (!$opdId) {
+        if (! $opdId) {
             return $query;
         }
+
         return $query->where('opd_id', $opdId);
     }
 
     public function scopeFilterPenyedia($query, $penyedia)
     {
-        if (!$penyedia) {
+        if (! $penyedia) {
             return $query;
         }
+
         return $query->where('nama_penyedia', 'like', "%{$penyedia}%");
     }
 }
-

@@ -5,14 +5,18 @@ namespace App\Exports;
 use App\Models\Contract;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\DefaultValueBinder;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ContractsExport implements FromQuery, WithHeadings, WithMapping, WithStyles, WithTitle, ShouldAutoSize
+class ContractsExport extends DefaultValueBinder implements FromQuery, ShouldAutoSize, WithCustomValueBinder, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     protected $filters;
 
@@ -21,23 +25,41 @@ class ContractsExport implements FromQuery, WithHeadings, WithMapping, WithStyle
         $this->filters = $filters;
     }
 
+    public function bindValue(Cell $cell, $value): bool
+    {
+        // Only the row number, amount, and budget year are numeric columns.
+        if (in_array($cell->getColumn(), ['A', 'G', 'M'], true) && is_numeric($value)) {
+            $cell->setValueExplicit($value, DataType::TYPE_NUMERIC);
+
+            return true;
+        }
+
+        if (is_string($value)) {
+            $cell->setValueExplicit($value, DataType::TYPE_STRING);
+
+            return true;
+        }
+
+        return parent::bindValue($cell, $value);
+    }
+
     public function query()
     {
         $query = Contract::with(['opd', 'uploader']);
 
-        if (!empty($this->filters['tahun'])) {
+        if (! empty($this->filters['tahun'])) {
             $query->where('tahun_anggaran', $this->filters['tahun']);
         }
 
-        if (!empty($this->filters['opd_id'])) {
+        if (! empty($this->filters['opd_id'])) {
             $query->where('opd_id', $this->filters['opd_id']);
         }
 
-        if (!empty($this->filters['jenis'])) {
+        if (! empty($this->filters['jenis'])) {
             $query->where('jenis_kontrak', $this->filters['jenis']);
         }
 
-        if (!empty($this->filters['sumber_dana'])) {
+        if (! empty($this->filters['sumber_dana'])) {
             $query->where('sumber_dana', $this->filters['sumber_dana']);
         }
 
@@ -125,4 +147,3 @@ class ContractsExport implements FromQuery, WithHeadings, WithMapping, WithStyle
         return 'Rekap Kontrak';
     }
 }
-

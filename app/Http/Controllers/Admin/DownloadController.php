@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AuditLog;
 use App\Models\Contract;
 use App\Models\Opd;
-use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use ZipArchive;
 
 class DownloadController extends Controller
@@ -44,6 +45,7 @@ class DownloadController extends Controller
         // Group contracts by OPD and Jenis for preview
         $grouped = $contracts->groupBy(function ($contract) {
             $opdName = $contract->opd?->singkatan ?? $contract->opd?->nama ?? 'Tanpa-OPD';
+
             return $this->sanitizeFolderName($opdName);
         })->map(function ($opdContracts) {
             return $opdContracts->groupBy(function ($contract) {
@@ -67,6 +69,16 @@ class DownloadController extends Controller
      */
     public function download(Request $request)
     {
+        $request->validate([
+            'selection_mode' => ['nullable', 'in:selected'],
+            'contract_ids' => ['required_if:selection_mode,selected', 'nullable', 'array', 'min:1'],
+            'contract_ids.*' => ['integer', 'distinct', 'exists:contracts,id'],
+            'tahun' => ['nullable', 'integer', 'between:2000,2100'],
+            'opd_id' => ['nullable', 'integer', 'exists:opds,id'],
+            'jenis' => ['nullable', 'in:'.implode(',', array_keys(Contract::JENIS_OPTIONS))],
+            'sumber_dana' => ['nullable', 'in:'.implode(',', array_keys(Contract::SUMBER_DANA_OPTIONS))],
+        ]);
+
         $query = Contract::with('opd')->whereNotNull('file_path');
 
         // Filter by selected contract IDs (checklist)
@@ -101,15 +113,15 @@ class DownloadController extends Controller
         }
 
         // Create ZIP file
-        $zipFileName = 'Kontrak_' . date('Y-m-d_His') . '.zip';
-        $zipPath = storage_path('app/temp/' . $zipFileName);
+        $zipFileName = 'Kontrak_'.date('Y-m-d_His').'.zip';
+        $zipPath = storage_path('app/temp/'.Str::uuid().'.zip');
 
         // Ensure temp directory exists
-        if (!file_exists(storage_path('app/temp'))) {
+        if (! file_exists(storage_path('app/temp'))) {
             mkdir(storage_path('app/temp'), 0755, true);
         }
 
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
         if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
             return back()->with('error', 'Gagal membuat file ZIP.');
         }
@@ -126,19 +138,29 @@ class DownloadController extends Controller
                 $jenisKontrak = $contract->jenis_kontrak ?? 'Lainnya';
                 $fileName = $this->generateFileName($contract);
 
-                $folderPath = $this->sanitizeFolderName($opdName) . '/' . 
-                              $this->sanitizeFolderName($jenisKontrak) . '/' . 
+                $folderPath = $this->sanitizeFolderName($opdName).'/'.
+                              $this->sanitizeFolderName($jenisKontrak).'/'.
                               $fileName;
 
-                $zip->addFile($filePath, $folderPath);
+                if (! $zip->addFile($filePath, $folderPath)) {
+                    $zip->close();
+                    @unlink($zipPath);
+
+                    return back()->with('error', 'Gagal menambahkan dokumen ke ZIP. Silakan coba kembali.');
+                }
                 $addedFiles++;
             }
         }
 
-        $zip->close();
+        if (! $zip->close()) {
+            @unlink($zipPath);
+
+            return back()->with('error', 'Gagal menyimpan file ZIP. Silakan coba kembali.');
+        }
 
         if ($addedFiles === 0) {
             @unlink($zipPath);
+
             return back()->with('error', 'Tidak ada file yang ditemukan di server.');
         }
 
@@ -165,7 +187,7 @@ class DownloadController extends Controller
         $penyedia = preg_replace('/\s+/', ' ', $penyedia); // normalize multiple spaces
         $penyedia = trim(substr($penyedia, 0, 50));
 
-        return $nama . '_' . $penyedia . '_' . $tahun . '.pdf';
+        return $nama.'_'.$penyedia.'_'.$tahun.'_'.$contract->id.'.pdf';
     }
 
     /**
@@ -175,7 +197,7 @@ class DownloadController extends Controller
     {
         $name = preg_replace('/[^a-zA-Z0-9\s]/', '', $name);
         $name = preg_replace('/\s+/', ' ', $name); // normalize multiple spaces
+
         return trim($name) ?: 'Unknown';
     }
 }
-

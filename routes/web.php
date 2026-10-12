@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\Route;
 
 // ==================== Guest Routes ====================
 Route::middleware('guest')->group(function () {
-    Route::get('/', fn() => redirect()->route('login'));
+    Route::get('/', fn () => redirect()->route('login'));
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
 });
@@ -35,7 +35,7 @@ Route::middleware(['auth', 'verified.user'])->group(function () {
     Route::get('/contracts/{contract}', [ContractController::class, 'show'])->name('contracts.show');
     Route::get('/contracts/{contract}/download', [ContractController::class, 'download'])->name('contracts.download');
     Route::get('/contracts/{contract}/preview', [ContractController::class, 'preview'])->name('contracts.preview');
-    
+
     // API untuk validasi nomor kontrak
     Route::post('/api/validate-contract-number', [ContractController::class, 'validateContractNumber'])->name('api.validate.contract');
 });

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AuditLog;
 use App\Models\Contract;
-use App\Models\Opd;
+use App\Services\ContractDocumentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,12 +17,7 @@ class ContractController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        $query = Contract::with('opd');
-
-        // Filter by user's OPD (non-admin users can only see their OPD's contracts)
-        if (!$user->isAdmin() && $user->opd_id) {
-            $query->where('opd_id', $user->opd_id);
-        }
+        $query = Contract::with('opd')->visibleTo($user);
 
         // Search
         if ($request->filled('search')) {
@@ -47,10 +42,7 @@ class ContractController extends Controller
         $contracts = $query->orderBy('created_at', 'desc')->paginate(15);
 
         // Get filter options (scoped to user's OPD for non-admin)
-        $contractScope = Contract::query();
-        if (!$user->isAdmin() && $user->opd_id) {
-            $contractScope->where('opd_id', $user->opd_id);
-        }
+        $contractScope = Contract::visibleTo($user);
 
         $years = (clone $contractScope)->distinct()->pluck('tahun_anggaran')->sort()->reverse();
         $jenisOptions = (clone $contractScope)->distinct()->whereNotNull('jenis_kontrak')->pluck('jenis_kontrak');
@@ -70,7 +62,7 @@ class ContractController extends Controller
         $user = auth()->user();
 
         // User must have OPD assigned
-        if (!$user->opd_id) {
+        if (! $user->opd_id) {
             return redirect()->route('contracts.index')
                 ->with('error', 'Anda belum terdaftar di OPD manapun. Hubungi administrator.');
         }
@@ -88,7 +80,7 @@ class ContractController extends Controller
         $user = auth()->user();
 
         // User must have OPD assigned
-        if (!$user->opd_id) {
+        if (! $user->opd_id) {
             return redirect()->route('contracts.index')
                 ->with('error', 'Anda belum terdaftar di OPD manapun. Hubungi administrator.');
         }
@@ -101,9 +93,9 @@ class ContractController extends Controller
             'tanggal_kontrak' => ['required', 'date'],
             'tanggal_mulai' => ['nullable', 'date'],
             'tanggal_selesai' => ['nullable', 'date', 'after_or_equal:tanggal_mulai'],
-            'jenis_kontrak' => ['required', 'string', 'in:' . implode(',', array_keys(Contract::JENIS_OPTIONS))],
+            'jenis_kontrak' => ['required', 'string', 'in:'.implode(',', array_keys(Contract::JENIS_OPTIONS))],
             'bidang' => ['nullable', 'string', 'max:100'],
-            'sumber_dana' => ['nullable', 'string', 'in:' . implode(',', array_keys(Contract::SUMBER_DANA_OPTIONS))],
+            'sumber_dana' => ['nullable', 'string', 'in:'.implode(',', array_keys(Contract::SUMBER_DANA_OPTIONS))],
             'lokasi' => ['nullable', 'string', 'max:255'],
             'tahun_anggaran' => ['required', 'integer', 'min:2000', 'max:2100'],
             'keterangan' => ['nullable', 'string'],
@@ -111,7 +103,7 @@ class ContractController extends Controller
         ]);
 
         // Create contract with user's OPD
-        $contract = Contract::create([
+        $contract = new Contract([
             'nomor_kontrak' => $validated['nomor_kontrak'],
             'nama_kontrak' => $validated['nama_kontrak'],
             'nama_penyedia' => $validated['nama_penyedia'],
@@ -120,7 +112,7 @@ class ContractController extends Controller
             'tanggal_mulai' => $validated['tanggal_mulai'] ?? null,
             'tanggal_selesai' => $validated['tanggal_selesai'] ?? null,
             'jenis_kontrak' => $validated['jenis_kontrak'],
-            'bidang' => $validated['bidang'] ?? null,
+            'bidang' => $validated['bidang'] ?? 'Aset',
             'sumber_dana' => $validated['sumber_dana'] ?? null,
             'lokasi' => $validated['lokasi'] ?? null,
             'opd_id' => $user->opd_id, // Always use user's OPD
@@ -128,10 +120,7 @@ class ContractController extends Controller
             'keterangan' => $validated['keterangan'] ?? null,
         ]);
 
-        // Handle file upload
-        if ($request->hasFile('dokumen')) {
-            $this->uploadDocument($contract, $request->file('dokumen'));
-        }
+        app(ContractDocumentService::class)->save($contract, $request->file('dokumen'));
 
         AuditLog::log('create', "User membuat kontrak baru: {$contract->nomor_kontrak}", $contract);
 
@@ -148,7 +137,7 @@ class ContractController extends Controller
         $user = auth()->user();
 
         // Check if user can access this contract (must be from same OPD or admin)
-        if (!$user->isAdmin() && $user->opd_id && $contract->opd_id !== $user->opd_id) {
+        if (! $contract->isAccessibleBy($user)) {
             abort(403, 'Anda tidak memiliki akses ke kontrak ini.');
         }
 
@@ -161,7 +150,7 @@ class ContractController extends Controller
     private function checkAccess(Contract $contract): void
     {
         $user = auth()->user();
-        if (!$user->isAdmin() && $user->opd_id && $contract->opd_id !== $user->opd_id) {
+        if (! $contract->isAccessibleBy($user)) {
             abort(403, 'Anda tidak memiliki akses ke kontrak ini.');
         }
     }
@@ -175,16 +164,16 @@ class ContractController extends Controller
         $this->checkAccess($contract);
 
         // Check if contract has file
-        if (!$contract->hasFile()) {
+        if (! $contract->hasFile()) {
             return redirect()->route('contracts.show', $contract)
                 ->with('error', 'Dokumen kontrak tidak tersedia.');
         }
 
         // Build full file path
-        $fullPath = storage_path('app/' . $contract->file_path);
+        $fullPath = Storage::disk('contracts')->path(preg_replace('/^contracts\//', '', $contract->file_path));
 
         // Check if file exists in storage
-        if (!file_exists($fullPath)) {
+        if (! file_exists($fullPath)) {
             return redirect()->route('contracts.show', $contract)
                 ->with('error', 'File tidak ditemukan di server.');
         }
@@ -194,7 +183,7 @@ class ContractController extends Controller
 
         // Return file for download
         return response()->download($fullPath, $contract->file_name, [
-            'Content-Type' => 'application/pdf'
+            'Content-Type' => 'application/pdf',
         ]);
     }
 
@@ -207,16 +196,16 @@ class ContractController extends Controller
         $this->checkAccess($contract);
 
         // Check if contract has file
-        if (!$contract->hasFile()) {
+        if (! $contract->hasFile()) {
             return redirect()->route('contracts.show', $contract)
                 ->with('error', 'Dokumen kontrak tidak tersedia.');
         }
 
         // Build full file path
-        $fullPath = storage_path('app/' . $contract->file_path);
+        $fullPath = Storage::disk('contracts')->path(preg_replace('/^contracts\//', '', $contract->file_path));
 
         // Check if file exists in storage
-        if (!file_exists($fullPath)) {
+        if (! file_exists($fullPath)) {
             return redirect()->route('contracts.show', $contract)
                 ->with('error', 'File tidak ditemukan di server.');
         }
@@ -225,101 +214,19 @@ class ContractController extends Controller
         return response()->file($fullPath, ['Content-Type' => 'application/pdf']);
     }
 
-    /**
-     * Upload document to secure storage
-     */
-    private function uploadDocument(Contract $contract, $file): void
+    /** Validate uniqueness without disclosing another OPD's contract data. */
+    public function validateContractNumber(Request $request)
     {
-        // Delete old file if exists
-        if ($contract->hasFile()) {
-            $this->deleteDocument($contract);
-        }
-
-        // Generate unique filename: OPD_Jenis_NamaKontrak_Tahun.pdf
-        $fileName = $this->generateFileName($contract);
-
-        // Store in contracts disk (storage/app/contracts)
-        $file->storeAs('', $fileName, 'contracts');
-
-        $contract->update([
-            'file_path' => 'contracts/' . $fileName,
-            'file_name' => $fileName,
-            'file_size' => $file->getSize(),
-            'uploaded_by' => auth()->id(),
-            'uploaded_at' => now(),
+        $validated = $request->validate([
+            'nomor_kontrak' => ['required', 'string', 'max:100'],
         ]);
 
-        AuditLog::logUpload($contract, auth()->user());
-    }
+        abort_unless(auth()->user()->isAdmin() || auth()->user()->opd_id !== null, 403);
+        $exists = Contract::where('nomor_kontrak', $validated['nomor_kontrak'])->exists();
 
-    /**
-     * Generate unique filename based on contract data
-     * Format: OPD_Jenis_NamaKontrak_Tahun.pdf
-     */
-    private function generateFileName(Contract $contract): string
-    {
-        // Get OPD singkatan or 'TANPA-OPD'
-        $opd = $contract->opd?->singkatan ?? 'TANPA-OPD';
-
-        // Get jenis kontrak or 'UMUM'
-        $jenis = $contract->jenis_kontrak ?? 'UMUM';
-
-        // Get nama kontrak (truncate if too long)
-        $nama = $contract->nama_kontrak;
-
-        // Get tahun
-        $tahun = $contract->tahun_anggaran;
-
-        // Sanitize each part (remove special characters, replace spaces with dash)
-        $opd = $this->sanitizeFileName($opd);
-        $jenis = $this->sanitizeFileName($jenis);
-        $nama = $this->sanitizeFileName($nama);
-
-        // Truncate nama if too long (max 50 chars)
-        if (strlen($nama) > 50) {
-            $nama = substr($nama, 0, 50);
-        }
-
-        // Build filename
-        $baseName = "{$opd}_{$jenis}_{$nama}_{$tahun}";
-
-        // Add unique suffix to prevent duplicates
-        $uniqueSuffix = '_' . substr(md5($contract->id . time()), 0, 8);
-
-        return $baseName . $uniqueSuffix . '.pdf';
-    }
-
-    /**
-     * Sanitize string for use in filename
-     */
-    private function sanitizeFileName(string $string): string
-    {
-        // Replace spaces with dash
-        $string = str_replace(' ', '-', $string);
-
-        // Remove special characters except dash and underscore
-        $string = preg_replace('/[^A-Za-z0-9\-_]/', '', $string);
-
-        // Remove multiple dashes
-        $string = preg_replace('/-+/', '-', $string);
-
-        // Trim dashes from start and end
-        $string = trim($string, '-');
-
-        return $string ?: 'UNKNOWN';
-    }
-
-    /**
-     * Delete document from storage
-     */
-    private function deleteDocument(Contract $contract): void
-    {
-        if ($contract->file_path) {
-            $fullPath = storage_path('app/' . $contract->file_path);
-            if (file_exists($fullPath)) {
-                unlink($fullPath);
-            }
-        }
+        return response()->json([
+            'valid' => ! $exists,
+            'message' => $exists ? 'Nomor kontrak sudah terdaftar.' : 'Nomor kontrak tersedia.',
+        ]);
     }
 }
-

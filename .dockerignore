@@ -1,0 +1,35 @@
+# Git
+.git
+.gitignore
+
+# Dependencies
+vendor
+node_modules
+
+# Storage & cache (mounted as volumes at runtime)
+storage
+bootstrap/cache
+
+# Environment & local config
+.env
+.env.*
+!.env.example
+
+# IDE & OS files
+.idea
+.vscode
+*.swp
+*.DS_Store
+
+# Logs
+*.log
+storage/logs
+
+# Build artifacts
+Dockerfile*
+docker-compose*.yml
+
+# Local TLS certificates and private keys
+*.pem
+*.key
+/ssl/

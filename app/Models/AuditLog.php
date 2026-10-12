@@ -125,6 +125,9 @@ class AuditLog extends Model
             'update' => 'Edit Data',
             'delete' => 'Hapus Data',
             'verify_user' => 'Verifikasi User',
+            'unverify_user' => 'Batalkan Verifikasi User',
+            'change_role' => 'Ubah Role User',
+            'reset_password' => 'Reset Kata Sandi',
             default => ucfirst($this->action),
         };
     }
@@ -144,4 +147,3 @@ class AuditLog extends Model
         };
     }
 }
-

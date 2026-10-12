@@ -2,9 +2,9 @@
     <x-slot name="title">Daftar</x-slot>
 
     <!-- Header -->
-    <div class="text-center mb-8">
-        <h2 class="text-2xl font-bold text-slate-800">Buat Akun Baru</h2>
-        <p class="text-slate-500 text-sm mt-1">Daftar untuk mengakses arsip kontrak</p>
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-slate-800">Buat Akun Baru</h1>
+        <p class="text-slate-500 text-sm mt-1">Akun akan ditinjau administrator sebelum dapat mengakses arsip kontrak.</p>
     </div>
 
     <form method="POST" action="{{ route('register') }}" class="space-y-5">
@@ -19,9 +19,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                     </svg>
                 </div>
-                <input type="text" name="name" id="name" value="{{ old('name') }}" required autofocus
+                <input type="text" autocomplete="name" name="name" id="name" value="{{ old('name') }}" required autofocus
                     placeholder="Masukkan nama lengkap"
-                    class="block w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent transition-all @error('name') border-red-500 ring-1 ring-red-500 @enderror">
+                    class="block w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent transition-all @error('name') border-red-500 ring-1 ring-red-500 @enderror ui-input">
             </div>
             @error('name')
             <p class="mt-1.5 text-sm text-red-600 flex items-center">
@@ -42,9 +42,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                     </svg>
                 </div>
-                <input type="email" name="email" id="email" value="{{ old('email') }}" required
+                <input type="email" autocomplete="email" name="email" id="email" value="{{ old('email') }}" required
                     placeholder="nama@email.com"
-                    class="block w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent transition-all @error('email') border-red-500 ring-1 ring-red-500 @enderror">
+                    class="block w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent transition-all @error('email') border-red-500 ring-1 ring-red-500 @enderror ui-input">
             </div>
             @error('email')
             <p class="mt-1.5 text-sm text-red-600 flex items-center">
@@ -66,7 +66,7 @@
                     </svg>
                 </div>
                 <select name="opd_id" id="opd_id" required
-                    class="block w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent transition-all appearance-none bg-white @error('opd_id') border-red-500 ring-1 ring-red-500 @enderror">
+                    class="block w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent transition-all appearance-none bg-white @error('opd_id') border-red-500 ring-1 ring-red-500 @enderror ui-input">
                     <option value="">-- Pilih OPD --</option>
                     @foreach($opds as $opd)
                         <option value="{{ $opd->id }}" {{ old('opd_id') == $opd->id ? 'selected' : '' }}>
@@ -90,18 +90,18 @@
             @enderror
         </div>
 
-        <!-- Password Field -->
+        <!-- Kata sandi Field -->
         <div>
-            <label for="password" class="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+            <label for="password" class="block text-sm font-medium text-slate-700 mb-1.5">Kata sandi</label>
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                     </svg>
                 </div>
-                <input type="password" name="password" id="password" required
+                <input type="password" minlength="8" autocomplete="new-password" name="password" id="password" required
                     placeholder="Minimal 8 karakter"
-                    class="block w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent transition-all @error('password') border-red-500 ring-1 ring-red-500 @enderror">
+                    class="block w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent transition-all @error('password') border-red-500 ring-1 ring-red-500 @enderror ui-input">
             </div>
             @error('password')
             <p class="mt-1.5 text-sm text-red-600 flex items-center">
@@ -113,18 +113,18 @@
             @enderror
         </div>
 
-        <!-- Confirm Password Field -->
+        <!-- Confirm Kata sandi Field -->
         <div>
-            <label for="password_confirmation" class="block text-sm font-medium text-slate-700 mb-1.5">Konfirmasi Password</label>
+            <label for="password_confirmation" class="block text-sm font-medium text-slate-700 mb-1.5">Konfirmasi Kata sandi</label>
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                     </svg>
                 </div>
-                <input type="password" name="password_confirmation" id="password_confirmation" required
+                <input type="password" minlength="8" autocomplete="new-password" name="password_confirmation" id="password_confirmation" required
                     placeholder="Ulangi password"
-                    class="block w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent transition-all">
+                    class="block w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 focus:border-transparent transition-all ui-input">
             </div>
         </div>
 
@@ -142,7 +142,7 @@
 
         <!-- Submit Button -->
         <button type="submit"
-            class="w-full flex items-center justify-center py-3 px-4 bg-slate-800 hover:bg-slate-900 text-white font-medium rounded-xl shadow-lg shadow-slate-800/25 transition-all focus:outline-none focus:ring-2 focus:ring-slate-800 focus:ring-offset-2">
+            class="w-full flex items-center justify-center py-3 px-4 bg-slate-800 hover:bg-slate-900 text-white font-medium rounded-xl   transition-all focus:outline-none focus:ring-2 focus:ring-slate-800 focus:ring-offset-2 ui-button btn-primary">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
             </svg>

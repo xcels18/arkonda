@@ -4,155 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ $title ?? 'ARKONDA' }} - ARKONDA</title>
-    <!-- Google Fonts - Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>{{ $title ?? 'Dashboard' }} — ARKONDA</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <style>
-        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
-    </style>
 </head>
-<body class="bg-slate-100 min-h-screen antialiased">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-sm border-b border-gray-200" x-data="{ mobileOpen: false }" @click.away="mobileOpen = false">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <a href="{{ route('dashboard') }}" class="flex items-center">
-                        <svg class="h-8 w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                        <span class="ml-2 text-xl font-semibold text-gray-900">ARKONDA</span>
-                    </a>
-                </div>
-
-                <!-- Desktop menu -->
-                <div class="hidden md:flex items-center space-x-4">
-                    <a href="{{ route('contracts.index') }}" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium {{ request()->routeIs('contracts.*') && !request()->routeIs('admin.*') ? 'bg-gray-100' : '' }}">
-                        Kontrak
-                    </a>
-                    @if(auth()->user()->isAdmin())
-                    <a href="{{ route('admin.contracts.index') }}" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium {{ request()->routeIs('admin.contracts.*') ? 'bg-gray-100' : '' }}">
-                        Kelola Kontrak
-                    </a>
-                    <a href="{{ route('admin.opds.index') }}" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium {{ request()->routeIs('admin.opds.*') ? 'bg-gray-100' : '' }}">
-                        Kelola OPD
-                    </a>
-                    <a href="{{ route('admin.users.index') }}" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium {{ request()->routeIs('admin.users.*') ? 'bg-gray-100' : '' }}">
-                        Kelola User
-                    </a>
-                    <a href="{{ route('admin.reports.index') }}" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium {{ request()->routeIs('admin.reports.*') ? 'bg-gray-100' : '' }}">
-                        Laporan
-                    </a>
-                    <a href="{{ route('admin.downloads.index') }}" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium {{ request()->routeIs('admin.downloads.*') ? 'bg-gray-100' : '' }}">
-                        Download Arsip
-                    </a>
-                    @endif
-                    <div class="relative" x-data="{ open: false }">
-                        <button @click="open = !open" class="flex items-center text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
-                            <span>{{ auth()->user()->name }}</span>
-                            <svg class="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                            </svg>
-                        </button>
-                        <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                            <div class="px-4 py-2 text-xs text-gray-500 border-b">
-                                {{ auth()->user()->email }}
-                                <span class="block text-xs mt-1 {{ auth()->user()->isAdmin() ? 'text-blue-600' : 'text-green-600' }}">
-                                    {{ auth()->user()->isAdmin() ? 'Administrator' : 'User' }}
-                                </span>
-                            </div>
-                            <form action="{{ route('logout') }}" method="POST">
-                                @csrf
-                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    Logout
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Mobile hamburger button -->
-                <div class="flex items-center md:hidden">
-                    <button @click="mobileOpen = !mobileOpen" class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none">
-                        <svg x-show="!mobileOpen" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
-                        <svg x-show="mobileOpen" x-cloak class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
+<body class="antialiased" x-data="{ mobileOpen: false }">
+    <a class="skip-link" href="#main-content">Lewati navigasi, menuju konten</a>
+    <aside class="app-sidebar" aria-label="Navigasi aplikasi">
+        <div class="sidebar-brand">
+            <a href="{{ route('dashboard') }}" class="flex items-center gap-3" aria-label="ARKONDA, buka dashboard">
+                <span class="brand-mark" aria-hidden="true">a</span>
+                <span><strong>ARKONDA</strong><small>INSPEKTORAT PUNCAK JAYA</small></span>
+            </a>
+            <button type="button" class="mobile-menu-button" @click="mobileOpen = !mobileOpen" :aria-expanded="mobileOpen" aria-controls="sidebar-navigation" aria-label="Buka atau tutup navigasi">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+        </div>
+        <nav id="sidebar-navigation" class="sidebar-nav" data-open="false" :data-open="mobileOpen.toString()" @keydown.escape="mobileOpen = false">
+            <p class="nav-section">RUANG KERJA</p>
+            <x-nav-link route="dashboard" pattern="dashboard" icon="dashboard">Dashboard</x-nav-link>
+            @if(auth()->user()->isAdmin())
+                <x-nav-link route="admin.contracts.index" pattern="admin.contracts.*" icon="document">Kelola kontrak</x-nav-link>
+                <x-nav-link route="admin.reports.index" pattern="admin.reports.*" icon="report">Laporan</x-nav-link>
+                <x-nav-link route="admin.downloads.index" pattern="admin.downloads.*" icon="download">Unduh arsip</x-nav-link>
+                <p class="nav-section mt-7">MASTER DATA</p>
+                <x-nav-link route="admin.opds.index" pattern="admin.opds.*" icon="building">Organisasi / OPD</x-nav-link>
+                <x-nav-link route="admin.users.index" pattern="admin.users.*" icon="users">Pengguna</x-nav-link>
+            @else
+                <x-nav-link route="contracts.index" pattern="contracts.*" icon="document">Kontrak OPD</x-nav-link>
+            @endif
+        </nav>
+        <div class="sidebar-footer"><p class="font-medium text-white">Inspektorat</p><p>Kabupaten Puncak Jaya</p></div>
+    </aside>
+    <div class="app-workspace">
+        <header class="app-topbar">
+            <div class="topbar-context"><strong>Inspektorat Kabupaten Puncak Jaya</strong><span class="hidden sm:inline">{{ $title ?? 'Dashboard' }}</span></div>
+            <div class="relative" x-data="{ open: false }" @keydown.escape="open = false">
+                <button type="button" class="account-trigger" @click="open = !open" :aria-expanded="open" aria-controls="account-menu" aria-label="Menu akun {{ auth()->user()->name }}">
+                    <span class="account-avatar" aria-hidden="true">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 2)) }}</span>
+                    <span class="hidden sm:block"><span class="block text-xs font-semibold">{{ auth()->user()->name }}</span><span class="block text-[10px] text-slate-500">{{ auth()->user()->isAdmin() ? 'Administrator' : 'Petugas OPD' }}</span></span>
+                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                </button>
+                <div id="account-menu" class="account-menu" x-show="open" x-cloak @click.outside="open = false">
+                    <p class="text-sm font-semibold">{{ auth()->user()->name }}</p><p class="text-xs text-slate-500">{{ auth()->user()->email }}</p>
+                    <p class="text-xs text-slate-500 mt-2">{{ auth()->user()->opd?->nama ?? 'Belum ditetapkan ke OPD' }}</p>
+                    <form action="{{ route('logout') }}" method="POST" class="mt-4">@csrf<button type="submit" class="ui-button btn-secondary w-full">Keluar dari akun</button></form>
                 </div>
             </div>
-        </div>
-
-        <!-- Mobile menu -->
-        <div x-show="mobileOpen" x-cloak class="md:hidden border-t border-gray-200">
-            <div class="px-2 pt-2 pb-3 space-y-1">
-                <a href="{{ route('contracts.index') }}" class="block text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium {{ request()->routeIs('contracts.*') && !request()->routeIs('admin.*') ? 'bg-gray-100' : '' }}">
-                    Kontrak
-                </a>
-                @if(auth()->user()->isAdmin())
-                <a href="{{ route('admin.contracts.index') }}" class="block text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium {{ request()->routeIs('admin.contracts.*') ? 'bg-gray-100' : '' }}">
-                    Kelola Kontrak
-                </a>
-                <a href="{{ route('admin.opds.index') }}" class="block text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium {{ request()->routeIs('admin.opds.*') ? 'bg-gray-100' : '' }}">
-                    Kelola OPD
-                </a>
-                <a href="{{ route('admin.users.index') }}" class="block text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium {{ request()->routeIs('admin.users.*') ? 'bg-gray-100' : '' }}">
-                    Kelola User
-                </a>
-                <a href="{{ route('admin.reports.index') }}" class="block text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium {{ request()->routeIs('admin.reports.*') ? 'bg-gray-100' : '' }}">
-                    Laporan
-                </a>
-                <a href="{{ route('admin.downloads.index') }}" class="block text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-md text-base font-medium {{ request()->routeIs('admin.downloads.*') ? 'bg-gray-100' : '' }}">
-                    Download Arsip
-                </a>
-                @endif
-            </div>
-            <div class="border-t border-gray-200 pt-4 pb-3">
-                <div class="px-4">
-                    <div class="text-sm font-medium text-gray-900">{{ auth()->user()->name }}</div>
-                    <div class="text-xs text-gray-500">{{ auth()->user()->email }}</div>
-                    <span class="inline-block mt-1 text-xs {{ auth()->user()->isAdmin() ? 'text-blue-600' : 'text-green-600' }}">
-                        {{ auth()->user()->isAdmin() ? 'Administrator' : 'User' }}
-                    </span>
-                </div>
-                <div class="mt-3 px-2">
-                    <form action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50">
-                            Logout
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        <!-- Flash Messages -->
-        @if(session('success'))
-        <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-            {{ session('success') }}
-        </div>
-        @endif
-        @if(session('error'))
-        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            {{ session('error') }}
-        </div>
-        @endif
-        @if(session('info'))
-        <div class="mb-4 bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative" role="alert">
-            {{ session('info') }}
-        </div>
-        @endif
-
-        {{ $slot }}
-    </main>
+        </header>
+        <main id="main-content" class="app-content" tabindex="-1">
+            @foreach(['success' => 'success', 'error' => 'error', 'info' => 'info'] as $key => $kind)
+                @if(session($key))<div class="ui-alert ui-alert-{{ $kind }}" role="{{ $key === 'error' ? 'alert' : 'status' }}">{{ session($key) }}</div>@endif
+            @endforeach
+            @if($errors->any())
+                <div class="ui-alert ui-alert-error" role="alert"><strong>Data belum dapat disimpan.</strong><p>Periksa dan perbaiki kolom berikut.</p><ul>@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
+            @endif
+            {{ $slot }}
+        </main>
+    </div>
 </body>
 </html>
-

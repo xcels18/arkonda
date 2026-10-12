@@ -1,32 +1,10 @@
 <x-guest-layout>
-    <x-slot name="title">Menunggu Verifikasi</x-slot>
-
-    <div class="text-center">
-        <div class="mx-auto h-16 w-16 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
-            <svg class="h-8 w-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-        </div>
-
-        <h3 class="text-lg font-medium text-gray-900 mb-2">Menunggu Verifikasi</h3>
-        
-        <p class="text-sm text-gray-600 mb-6">
-            Akun Anda sedang dalam proses verifikasi oleh administrator. 
-            Silakan tunggu hingga akun Anda diverifikasi untuk dapat mengakses sistem.
-        </p>
-
-        <div class="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6">
-            <p class="text-sm text-blue-700">
-                <strong>Info:</strong> Anda akan mendapatkan akses setelah administrator memverifikasi akun Anda.
-            </p>
-        </div>
-
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="text-sm text-gray-600 hover:text-gray-900 underline">
-                Logout
-            </button>
-        </form>
-    </div>
+    <x-slot name="title">Menunggu verifikasi</x-slot>
+    <span class="inline-flex px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-medium mb-4">Menunggu verifikasi</span>
+    <h1>Akun sedang ditinjau</h1>
+    <p class="text-sm text-slate-500 mt-3">Administrator perlu memverifikasi akun Anda sebelum arsip kontrak dapat diakses.</p>
+    <dl class="mt-6 space-y-3 border-y border-slate-200 py-4"><div><dt class="text-xs text-slate-500">Nama pengguna</dt><dd class="font-medium">{{ auth()->user()->name }}</dd></div><div><dt class="text-xs text-slate-500">OPD</dt><dd class="font-medium">{{ auth()->user()->opd?->nama ?? 'Belum ditetapkan' }}</dd></div></dl>
+    <p class="text-xs text-slate-500 mt-4">Jika akses diperlukan segera, hubungi administrator Inspektorat.</p>
+    <a href="{{ route('verification.pending') }}" class="ui-button btn-primary w-full mt-5">Periksa status verifikasi</a>
+    <form action="{{ route('logout') }}" method="POST" class="mt-2">@csrf<button type="submit" class="ui-button btn-secondary w-full">Keluar dari akun</button></form>
 </x-guest-layout>
-

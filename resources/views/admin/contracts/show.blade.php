@@ -58,8 +58,8 @@
             </div>
 
             <!-- Informasi Kontrak -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="px-6 py-4 bg-gradient-to-r from-slate-50 to-white border-b border-slate-200">
+            <div class="bg-white rounded-xl  border border-slate-200 overflow-hidden ui-card">
+                <div class="px-6 py-4 bg-slate-50 border-b border-slate-200">
                     <h2 class="text-lg font-semibold text-slate-800">Informasi Kontrak</h2>
                     <p class="text-sm text-slate-500 mt-0.5">Data lengkap kontrak</p>
                 </div>
@@ -106,8 +106,8 @@
             </div>
 
             <!-- Informasi Penyedia -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="px-6 py-4 bg-gradient-to-r from-slate-50 to-white border-b border-slate-200">
+            <div class="bg-white rounded-xl  border border-slate-200 overflow-hidden ui-card">
+                <div class="px-6 py-4 bg-slate-50 border-b border-slate-200">
                     <h2 class="text-lg font-semibold text-slate-800">Informasi Penyedia</h2>
                     <p class="text-sm text-slate-500 mt-0.5">Data rekanan/vendor</p>
                 </div>
@@ -131,8 +131,8 @@
             </div>
 
             <!-- Periode Kontrak -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="px-6 py-4 bg-gradient-to-r from-slate-50 to-white border-b border-slate-200">
+            <div class="bg-white rounded-xl  border border-slate-200 overflow-hidden ui-card">
+                <div class="px-6 py-4 bg-slate-50 border-b border-slate-200">
                     <h2 class="text-lg font-semibold text-slate-800">Periode Kontrak</h2>
                     <p class="text-sm text-slate-500 mt-0.5">Timeline pelaksanaan</p>
                 </div>
@@ -167,7 +167,7 @@
         <!-- Right Column - Document & Meta -->
         <div class="space-y-6">
             <!-- Dokumen Kontrak -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-white rounded-xl  border border-slate-200 overflow-hidden ui-card">
                 <div class="px-6 py-4 bg-gradient-to-r from-red-50 to-white border-b border-slate-200">
                     <h2 class="text-lg font-semibold text-slate-800">Dokumen Kontrak</h2>
                     <p class="text-sm text-slate-500 mt-0.5">File scan kontrak</p>
@@ -202,7 +202,7 @@
                                 Preview
                             </a>
                             <a href="{{ route('contracts.download', $contract) }}"
-                               class="flex items-center justify-center px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all text-sm">
+                               class="flex items-center justify-center px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all text-sm ui-button btn-primary">
                                 <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                                 </svg>
@@ -230,8 +230,8 @@
             </div>
 
             <!-- Keterangan -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="px-6 py-4 bg-gradient-to-r from-slate-50 to-white border-b border-slate-200">
+            <div class="bg-white rounded-xl  border border-slate-200 overflow-hidden ui-card">
+                <div class="px-6 py-4 bg-slate-50 border-b border-slate-200">
                     <h2 class="text-lg font-semibold text-slate-800">Keterangan</h2>
                 </div>
                 <div class="p-6">
@@ -267,7 +267,7 @@
             </div>
 
             <!-- Quick Actions -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div class="bg-white rounded-xl  border border-slate-200 p-6 ui-card">
                 <h3 class="text-sm font-semibold text-slate-700 mb-4">Aksi Cepat</h3>
                 <div class="space-y-2">
                     <a href="{{ route('admin.contracts.edit', $contract) }}" class="flex items-center w-full px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 rounded-lg transition-colors">

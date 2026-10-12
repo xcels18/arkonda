@@ -1,52 +1,52 @@
 <x-app-layout>
     <x-slot name="title">Kelola Kontrak</x-slot>
 
-    <div class="mb-6 flex justify-between items-center">
+    <div class="page-header mb-6 flex justify-between items-center">
         <h1 class="text-2xl font-bold text-gray-900">Kelola Kontrak</h1>
-        <a href="{{ route('admin.contracts.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm">
+        <a href="{{ route('admin.contracts.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm ui-button btn-secondary table-action-button">
             + Tambah Kontrak
         </a>
     </div>
 
     <!-- Filters -->
-    <div class="bg-white shadow rounded-lg p-4 mb-6">
-        <form method="GET" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nomor/nama kontrak..."
-                    class="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                <select name="tahun" class="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+    <div class="bg-white  rounded-lg p-4 mb-6 ui-card">
+        <form method="GET" class="ui-filter space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
+                <div class="min-w-0"><label for="filter-search">Pencarian</label><input type="text" id="filter-search" name="search" value="{{ request('search') }}" placeholder="Cari nomor/nama kontrak..."
+                    class="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ui-input"></div>
+                <div class="min-w-0"><label for="filter-tahun">Tahun anggaran</label><select id="filter-tahun" name="tahun" class="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ui-input">
                     <option value="">Semua Tahun</option>
                     @foreach($years as $year)
                     <option value="{{ $year }}" {{ request('tahun') == $year ? 'selected' : '' }}>{{ $year }}</option>
                     @endforeach
-                </select>
-                <select name="opd_id" class="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </select></div>
+                <div class="min-w-0"><label for="filter-opd_id">OPD</label><select id="filter-opd_id" name="opd_id" class="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ui-input">
                     <option value="">Semua OPD</option>
                     @foreach($opds as $opd)
                     <option value="{{ $opd->id }}" {{ request('opd_id') == $opd->id ? 'selected' : '' }}>{{ $opd->singkatan ?? $opd->nama }}</option>
                     @endforeach
-                </select>
-                <select name="jenis" class="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                </select></div>
+                <div class="min-w-0"><label for="filter-jenis">Jenis kontrak</label><select id="filter-jenis" name="jenis" class="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ui-input">
                     <option value="">Semua Jenis</option>
                     @foreach(\App\Models\Contract::JENIS_OPTIONS as $value => $label)
                     <option value="{{ $value }}" {{ request('jenis') == $value ? 'selected' : '' }}>{{ $label }}</option>
                     @endforeach
-                </select>
-                <div class="flex space-x-2">
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm">Filter</button>
-                    <a href="{{ route('admin.contracts.index') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 text-sm">Reset</a>
+                </select></div>
+                <div class="ui-filter-actions">
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm ui-button btn-primary">Filter</button>
+                    <a href="{{ route('admin.contracts.index') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 text-sm ui-button btn-secondary">Reset</a>
                 </div>
             </div>
         </form>
     </div>
 
     <!-- Contracts Table -->
-    <div class="bg-white shadow rounded-lg overflow-hidden">
+    <div class="bg-white  rounded-lg overflow-hidden ui-card">
         <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
             <div class="flex items-center justify-between">
                 <p class="text-sm text-gray-700">
-                    Menampilkan <span class="font-medium">{{ $contracts->firstItem() ?? 0 }}</span> 
-                    sampai <span class="font-medium">{{ $contracts->lastItem() ?? 0 }}</span> 
+                    Menampilkan <span class="font-medium">{{ $contracts->firstItem() ?? 0 }}</span>
+                    sampai <span class="font-medium">{{ $contracts->lastItem() ?? 0 }}</span>
                     dari <span class="font-medium">{{ $contracts->total() }}</span> kontrak
                 </p>
                 <div class="text-sm text-gray-500">
@@ -58,15 +58,15 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-100">
                     <tr>
-                        <th class="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-16">No</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Nomor Kontrak</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider" style="min-width: 250px;">Nama Kontrak</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">OPD</th>
-                        <th class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider" style="min-width: 180px;">Penyedia</th>
-                        <th class="px-4 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">Nilai Kontrak</th>
-                        <th class="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">Tahun</th>
-                        <th class="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">Dok</th>
-                        <th class="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider" style="min-width: 180px;">Aksi</th>
+                        <th scope="col" class="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider w-16">No</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Nomor Kontrak</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider" style="min-width: 250px;">Nama Kontrak</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">OPD</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider" style="min-width: 180px;">Penyedia</th>
+                        <th scope="col" class="px-4 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">Nilai Kontrak</th>
+                        <th scope="col" class="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">Tahun</th>
+                        <th scope="col" class="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">Dok</th>
+                        <th scope="col" class="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider" style="min-width: 180px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -118,15 +118,15 @@
                         </td>
                         <td class="px-4 py-3 whitespace-nowrap text-sm text-center">
                             <div class="flex items-center justify-center gap-2">
-                                <a href="{{ route('admin.contracts.show', $contract) }}" 
-                                   class="inline-flex items-center px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded transition-colors">
+                                <a href="{{ route('admin.contracts.show', $contract) }}"
+                                   class="inline-flex items-center px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded transition-colors ui-button btn-secondary table-action-button">
                                     <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                                     </svg>
                                     Lihat
                                 </a>
-                                <a href="{{ route('admin.contracts.edit', $contract) }}" 
+                                <a href="{{ route('admin.contracts.edit', $contract) }}"
                                    class="inline-flex items-center px-2.5 py-1.5 bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-medium rounded transition-colors">
                                     <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
@@ -136,8 +136,8 @@
                                 <form action="{{ route('admin.contracts.destroy', $contract) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus kontrak ini?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" 
-                                            class="inline-flex items-center px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded transition-colors">
+                                    <button type="submit"
+                                            class="inline-flex items-center px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-medium rounded transition-colors ui-button btn-danger">
                                         <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                         </svg>

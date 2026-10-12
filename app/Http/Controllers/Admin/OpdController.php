@@ -8,9 +8,19 @@ use Illuminate\Http\Request;
 
 class OpdController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $opds = Opd::orderBy('kode')->paginate(20);
+        $query = Opd::query();
+        if ($request->filled('search')) {
+            $search = $request->string('search')->toString();
+            $query->where(function ($query) use ($search) {
+                $query->where('kode', 'like', "%{$search}%")
+                    ->orWhere('nama', 'like', "%{$search}%")
+                    ->orWhere('singkatan', 'like', "%{$search}%");
+            });
+        }
+        $opds = $query->orderBy('kode')->paginate(20)->withQueryString();
+
         return view('admin.opds.index', compact('opds'));
     }
 
@@ -40,7 +50,7 @@ class OpdController extends Controller
     public function update(Request $request, Opd $opd)
     {
         $validated = $request->validate([
-            'kode' => ['required', 'string', 'max:10', 'unique:opds,kode,' . $opd->id],
+            'kode' => ['required', 'string', 'max:10', 'unique:opds,kode,'.$opd->id],
             'nama' => ['required', 'string', 'max:255'],
             'singkatan' => ['required', 'string', 'max:50'],
         ]);

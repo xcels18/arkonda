@@ -6,7 +6,7 @@
         <p class="text-gray-600">{{ $contract->nomor_kontrak }}</p>
     </div>
 
-    <div class="bg-white shadow rounded-lg p-6">
+    <div class="bg-white  rounded-lg p-6 ui-card">
         <form action="{{ route('admin.contracts.update', $contract) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
             @method('PUT')
@@ -16,23 +16,23 @@
                     <label for="nomor_kontrak" class="block text-sm font-medium text-gray-700">Nomor Kontrak *</label>
                     <div class="flex gap-2">
                         <input type="text" name="nomor_kontrak" id="nomor_kontrak" value="{{ old('nomor_kontrak', $contract->nomor_kontrak) }}" required
-                            class="flex-1 mt-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error('nomor_kontrak') border-red-500 @enderror">
+                            class="flex-1 mt-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error('nomor_kontrak') border-red-500 @enderror ui-input">
                         <button type="button" id="btn-validate-contract" onclick="validateContractNumber()"
-                            class="mt-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md transition-all flex items-center gap-1">
+                            class="mt-1 px-3 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md transition-all flex items-center gap-1 ui-button btn-primary">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
                             <span>Validasi</span>
                         </button>
                     </div>
-                    <div id="validation-result" class="mt-2 hidden"></div>
+                    <div id="validation-result" role="status" aria-live="polite" class="mt-2 hidden"></div>
                     @error('nomor_kontrak')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label for="tahun_anggaran" class="block text-sm font-medium text-gray-700">Tahun Anggaran *</label>
                     <input type="number" name="tahun_anggaran" id="tahun_anggaran" value="{{ old('tahun_anggaran', $contract->tahun_anggaran) }}" min="2000" max="2100" required
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error('tahun_anggaran') border-red-500 @enderror">
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error('tahun_anggaran') border-red-500 @enderror ui-input">
                     @error('tahun_anggaran')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
             </div>
@@ -40,7 +40,7 @@
             <div>
                 <label for="nama_kontrak" class="block text-sm font-medium text-gray-700">Nama Kontrak *</label>
                 <input type="text" name="nama_kontrak" id="nama_kontrak" value="{{ old('nama_kontrak', $contract->nama_kontrak) }}" required
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error('nama_kontrak') border-red-500 @enderror">
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error('nama_kontrak') border-red-500 @enderror ui-input">
                 @error('nama_kontrak')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
             </div>
 
@@ -48,14 +48,14 @@
                 <div>
                     <label for="nama_penyedia" class="block text-sm font-medium text-gray-700">Nama Penyedia *</label>
                     <input type="text" name="nama_penyedia" id="nama_penyedia" value="{{ old('nama_penyedia', $contract->nama_penyedia) }}" required
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error('nama_penyedia') border-red-500 @enderror">
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error('nama_penyedia') border-red-500 @enderror ui-input">
                     @error('nama_penyedia')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label for="nilai_kontrak" class="block text-sm font-medium text-gray-700">Nilai Kontrak (Rp) *</label>
                     <input type="number" name="nilai_kontrak" id="nilai_kontrak" value="{{ old('nilai_kontrak', $contract->nilai_kontrak) }}" min="0" step="0.01" required
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error('nilai_kontrak') border-red-500 @enderror">
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error('nilai_kontrak') border-red-500 @enderror ui-input">
                     @error('nilai_kontrak')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
             </div>
@@ -64,20 +64,20 @@
                 <div>
                     <label for="tanggal_kontrak" class="block text-sm font-medium text-gray-700">Tanggal Kontrak *</label>
                     <input type="date" name="tanggal_kontrak" id="tanggal_kontrak" value="{{ old('tanggal_kontrak', $contract->tanggal_kontrak?->format('Y-m-d')) }}" required
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error('tanggal_kontrak') border-red-500 @enderror">
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error('tanggal_kontrak') border-red-500 @enderror ui-input">
                     @error('tanggal_kontrak')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label for="tanggal_mulai" class="block text-sm font-medium text-gray-700">Tanggal Mulai</label>
                     <input type="date" name="tanggal_mulai" id="tanggal_mulai" value="{{ old('tanggal_mulai', $contract->tanggal_mulai?->format('Y-m-d')) }}"
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ui-input">
                 </div>
 
                 <div>
                     <label for="tanggal_selesai" class="block text-sm font-medium text-gray-700">Tanggal Selesai</label>
                     <input type="date" name="tanggal_selesai" id="tanggal_selesai" value="{{ old('tanggal_selesai', $contract->tanggal_selesai?->format('Y-m-d')) }}"
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ui-input">
                     @error('tanggal_selesai')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
             </div>
@@ -86,11 +86,11 @@
                 <div>
                     <label for="opd_search" class="block text-sm font-medium text-gray-700">OPD (ketik min. 3 huruf)</label>
                     <div class="relative">
-                        <input type="text" id="opd_search" autocomplete="off"
+                        <input type="text" id="opd_search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="opd_dropdown" autocomplete="off"
                             placeholder="Ketik nama/singkatan OPD..."
-                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ui-input">
                         <input type="hidden" name="opd_id" id="opd_id" value="{{ old('opd_id', $contract->opd_id) }}">
-                        <div id="opd_dropdown" class="absolute z-[100] w-full mt-1 bg-white border border-gray-300 rounded-md shadow-xl max-h-60 overflow-y-auto hidden"></div>
+                        <div id="opd_dropdown" role="listbox" aria-label="Hasil pencarian OPD" class="absolute z-[100] w-full mt-1 bg-white border border-gray-300 rounded-md  max-h-60 overflow-y-auto hidden ui-card"></div>
                     </div>
                     @error('opd_id')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
@@ -98,7 +98,7 @@
                 <div>
                     <label for="jenis_kontrak" class="block text-sm font-medium text-gray-700">Jenis Kontrak *</label>
                     <select name="jenis_kontrak" id="jenis_kontrak" required
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error('jenis_kontrak') border-red-500 @enderror">
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm @error('jenis_kontrak') border-red-500 @enderror ui-input">
                         <option value="">-- Pilih Jenis --</option>
                         @foreach(\App\Models\Contract::JENIS_OPTIONS as $value => $label)
                         <option value="{{ $value }}" {{ old('jenis_kontrak', $contract->jenis_kontrak) == $value ? 'selected' : '' }}>{{ $label }}</option>
@@ -110,7 +110,7 @@
                 <div>
                     <label for="sumber_dana" class="block text-sm font-medium text-gray-700">Sumber Dana</label>
                     <select name="sumber_dana" id="sumber_dana"
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ui-input">
                         <option value="">— Pilih Sumber Dana —</option>
                         @foreach(\App\Models\Contract::SUMBER_DANA_OPTIONS as $value => $label)
                         <option value="{{ $value }}" {{ old('sumber_dana', $contract->sumber_dana) == $value ? 'selected' : '' }}>{{ $label }}</option>
@@ -121,7 +121,7 @@
                 <div>
                     <label for="bidang" class="block text-sm font-medium text-gray-700">Bidang</label>
                     <input type="text" name="bidang" id="bidang" value="{{ old('bidang', $contract->bidang) }}"
-                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ui-input">
                 </div>
             </div>
 
@@ -129,13 +129,13 @@
                 <label for="lokasi" class="block text-sm font-medium text-gray-700">Lokasi</label>
                 <input type="text" name="lokasi" id="lokasi" value="{{ old('lokasi', $contract->lokasi) }}"
                     placeholder="Contoh: Jl. Sudirman No. 123, Kota Jayapura"
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ui-input">
             </div>
 
             <div>
                 <label for="keterangan" class="block text-sm font-medium text-gray-700">Keterangan</label>
-                <textarea name="keterangan" id="keterangan" rows="3"
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">{{ old('keterangan', $contract->keterangan) }}</textarea>
+                <textarea name="keterangan" id="keterangan" aria-label="Keterangan kontrak" rows="3"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm ui-input">{{ old('keterangan', $contract->keterangan) }}</textarea>
             </div>
 
             <div>
@@ -154,12 +154,18 @@
 
             <div class="flex justify-end space-x-3">
                 <a href="{{ route('admin.contracts.index') }}" class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">Batal</a>
-                <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">Update</button>
+                <button type="submit" class="px-4 py-2 border border-transparent rounded-md  text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 ui-button btn-primary">Update</button>
             </div>
         </form>
     </div>
 
     <script>
+        function escapeContractText(value) {
+            const element = document.createElement('span');
+            element.textContent = String(value ?? '');
+            return element.innerHTML;
+        }
+
         async function validateContractNumber() {
             const nomorKontrak = document.getElementById('nomor_kontrak').value.trim();
             const resultDiv = document.getElementById('validation-result');
@@ -179,15 +185,18 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                     },
-                    body: JSON.stringify({ 
+                    body: JSON.stringify({
                         nomor_kontrak: nomorKontrak,
                         contract_id: {{ $contract->id }}
                     })
                 });
 
+                if (!response.ok) throw new Error('Validasi gagal');
                 const data = await response.json();
+                if (document.getElementById('nomor_kontrak').value.trim() !== nomorKontrak) return;
 
                 if (data.valid) {
                     resultDiv.innerHTML = `
@@ -196,7 +205,7 @@
                                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                                 </svg>
-                                ${data.message}
+                                ${escapeContractText(data.message)}
                             </p>
                         </div>
                     `;
@@ -205,9 +214,9 @@
                     if (data.existing) {
                         details = `
                             <div class="mt-1 text-xs text-red-600 bg-red-50 p-2 rounded">
-                                <div><strong>Nama:</strong> ${data.existing.nama_kontrak}</div>
-                                <div><strong>Penyedia:</strong> ${data.existing.nama_penyedia}</div>
-                                <div><strong>OPD:</strong> ${data.existing.opd} | <strong>Tahun:</strong> ${data.existing.tahun_anggaran}</div>
+                                <div><strong>Nama:</strong> ${escapeContractText(data.existing.nama_kontrak)}</div>
+                                <div><strong>Penyedia:</strong> ${escapeContractText(data.existing.nama_penyedia)}</div>
+                                <div><strong>OPD:</strong> ${escapeContractText(data.existing.opd)} | <strong>Tahun:</strong> ${escapeContractText(data.existing.tahun_anggaran)}</div>
                             </div>
                         `;
                     }
@@ -217,7 +226,7 @@
                                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
                                 </svg>
-                                ${data.message}
+                                ${escapeContractText(data.message)}
                             </p>
                             ${details}
                         </div>
@@ -234,52 +243,93 @@
             }
         }
 
+        document.getElementById('nomor_kontrak').addEventListener('input', () => {
+            document.getElementById('validation-result').classList.add('hidden');
+        });
+
         const opds = @json($opds);
         const opdSearch = document.getElementById('opd_search');
         const opdId = document.getElementById('opd_id');
         const opdDropdown = document.getElementById('opd_dropdown');
 
         opdSearch.addEventListener('input', function() {
+            opdId.value = '';
+            opdSearch.setAttribute('aria-expanded', 'false');
             const query = this.value.toLowerCase().trim();
-            
+
             if (query.length < 3) {
                 opdDropdown.classList.add('hidden');
+            opdSearch.setAttribute('aria-expanded', 'false');
                 opdDropdown.innerHTML = '';
                 return;
             }
 
-            const filtered = opds.filter(opd => 
-                opd.nama.toLowerCase().includes(query) || 
-                opd.singkatan.toLowerCase().includes(query) ||
+            const filtered = opds.filter(opd =>
+                opd.nama.toLowerCase().includes(query) ||
+                (opd.singkatan ?? '').toLowerCase().includes(query) ||
                 opd.kode.toLowerCase().includes(query)
             );
 
             if (filtered.length === 0) {
                 opdDropdown.innerHTML = '<div class="px-3 py-2 text-sm text-gray-500">Tidak ada hasil</div>';
                 opdDropdown.classList.remove('hidden');
+            opdSearch.setAttribute('aria-expanded', 'true');
                 return;
             }
 
-            opdDropdown.innerHTML = filtered.map(opd => `
-                <div class="px-3 py-2 hover:bg-blue-50 cursor-pointer text-sm border-b border-gray-100 last:border-0" 
-                     onclick="selectOpd(${opd.id}, '${opd.singkatan}', '${opd.nama}')">
-                    <div class="font-medium text-gray-700">${opd.singkatan}</div>
-                    <div class="text-xs text-gray-500">${opd.nama}</div>
-                </div>
-            `).join('');
-            
+            opdDropdown.replaceChildren();
+            filtered.forEach(opd => {
+                const option = document.createElement('button');
+                option.type = 'button';
+                option.setAttribute('role', 'option');
+                option.setAttribute('aria-selected', 'false');
+                option.className = 'block w-full text-left px-3 py-2 hover:bg-blue-50 cursor-pointer text-sm border-b border-gray-100 last:border-0';
+                const title = document.createElement('div');
+                title.className = 'font-medium text-gray-700';
+                title.textContent = opd.singkatan ?? '';
+                const description = document.createElement('div');
+                description.className = 'text-xs text-gray-500';
+                description.textContent = opd.nama;
+                option.append(title, description);
+                option.addEventListener('click', () => selectOpd(opd.id, opd.singkatan ?? '', opd.nama));
+                opdDropdown.append(option);
+            });
+
             opdDropdown.classList.remove('hidden');
+            opdSearch.setAttribute('aria-expanded', 'true');
+        });
+
+        opdSearch.addEventListener('keydown', event => {
+            if (event.key === 'ArrowDown' && !opdDropdown.classList.contains('hidden')) {
+                event.preventDefault();
+                opdDropdown.querySelector('button')?.focus();
+            }
+        });
+        opdDropdown.addEventListener('keydown', event => {
+            const options = Array.from(opdDropdown.querySelectorAll('button'));
+            const index = options.indexOf(document.activeElement);
+            if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+                event.preventDefault();
+                options[(index + (event.key === 'ArrowDown' ? 1 : -1) + options.length) % options.length]?.focus();
+            } else if (event.key === 'Escape') {
+                opdDropdown.classList.add('hidden');
+                opdSearch.setAttribute('aria-expanded', 'false');
+                opdSearch.focus();
+            }
         });
 
         function selectOpd(id, singkatan, nama) {
             opdId.value = id;
             opdSearch.value = `${singkatan} - ${nama}`;
             opdDropdown.classList.add('hidden');
+            opdSearch.setAttribute('aria-expanded', 'false');
+            opdSearch.focus();
         }
 
         document.addEventListener('click', function(e) {
             if (!opdSearch.contains(e.target) && !opdDropdown.contains(e.target)) {
                 opdDropdown.classList.add('hidden');
+            opdSearch.setAttribute('aria-expanded', 'false');
             }
         });
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuditLog;
+use App\Models\Contract;
 use App\Models\Opd;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -38,12 +39,13 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
+            $request->session()->put('password_hash_web', Auth::guard('web')->hashPasswordForCookie(Auth::user()->getAuthPassword()));
 
             // Log login activity
             AuditLog::logLogin(Auth::user());
 
             // Redirect based on verification status
-            if (!Auth::user()->isAdmin() && !Auth::user()->isVerified()) {
+            if (! Auth::user()->isAdmin() && ! Auth::user()->isVerified()) {
                 return redirect()->route('verification.pending');
             }
 
@@ -61,6 +63,7 @@ class AuthController extends Controller
     public function showRegisterForm()
     {
         $opds = Opd::orderBy('nama')->get();
+
         return view('auth.register', compact('opds'));
     }
 
@@ -86,6 +89,8 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
+        $request->session()->regenerate();
+        $request->session()->put('password_hash_web', Auth::guard('web')->hashPasswordForCookie($user->getAuthPassword()));
 
         return redirect()->route('verification.pending');
     }
@@ -129,7 +134,16 @@ class AuthController extends Controller
      */
     public function dashboard()
     {
-        return view('dashboard');
+        $query = Contract::visibleTo(Auth::user());
+        $stats = [
+            'total' => (clone $query)->count(),
+            'nilai' => (clone $query)->sum('nilai_kontrak'),
+            'dokumen' => (clone $query)->whereNotNull('file_path')->count(),
+            'tahun' => (clone $query)->where('tahun_anggaran', now()->year)->count(),
+        ];
+        $recentContracts = (clone $query)->with('opd')->latest()->take(6)->get();
+        $pendingUsers = Auth::user()->isAdmin() ? User::users()->unverified()->count() : 0;
+
+        return view('dashboard', compact('stats', 'recentContracts', 'pendingUsers'));
     }
 }
-
